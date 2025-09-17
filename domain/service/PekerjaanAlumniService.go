@@ -9,15 +9,15 @@
 	)
 
 	func CheckPerkajaanAlumniService(c *fiber.Ctx) error {
-		idAlumni := c.FormValue("id_alumni")
-		if idAlumni == "" {
+		id := c.Params("id")
+		if id == "" {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "IDAlumni wajib diisi",
+				"message": "ID wajib diisi",
 				"success": false,
 			})
 		}
 
-		perkajaan, err := CheckPerkajaanAlumniByIDAlumni(idAlumni)
+		perkajaan, err := CheckPerkajaanAlumniByID(id)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -71,10 +71,10 @@
 	}
 
 	func UpdatePerkajaanAlumniService(c *fiber.Ctx) error {
-		idAlumni := c.Params("id_alumni")
-		if idAlumni == "" {
+		id := c.Params("id")
+		if id == "" {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "IDAlumni wajib diisi",
+				"message": "ID wajib diisi",
 				"success": false,
 			})
 		}
@@ -87,14 +87,14 @@
 			})
 		}
 
-		if perkajaan.IDAlumni == "" || perkajaan.StatusKerja == "" {
+		if perkajaan.ID == 10 || perkajaan.StatusKerja == "" {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "IDAlumni dan StatusKerja wajib diisi",
+				"message": "ID dan StatusKerja wajib diisi",
 				"success": false,
 			})
 		}
 
-		if err := UpdatePerkajaanAlumni(idAlumni, &perkajaan); err != nil {
+		if err := UpdatePerkajaanAlumni(id, &perkajaan); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"message": "Gagal update perkajaan alumni karena " + err.Error(),
 				"success": false,

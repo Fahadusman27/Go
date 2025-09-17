@@ -10,7 +10,7 @@ import (
 )
 
 func CheckAlumniService(c *fiber.Ctx) error {
-    nim := c.FormValue("nim")
+    nim := c.Params("nim")
     if nim == "" {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
             "message": "NIM wajib diisi",

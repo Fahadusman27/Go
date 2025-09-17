@@ -6,13 +6,13 @@ import (
 )
 
 // CheckPerkajaanAlumniByIDAlumni checks if a PerkajaanAlumni exists by IDAlumni
-func CheckPerkajaanAlumniByIDAlumni(idAlumni string) (*model.PerkajaanAlumni, error) {
+func CheckPerkajaanAlumniByID(id string) (*model.PerkajaanAlumni, error) {
 	perkajaan := new(model.PerkajaanAlumni)
 	query := `
 		SELECT id, id_alumni, status_kerja, jenis_industri,
 		    jabatan, gaji, lama_bekerja
-		FROM perkajaan_alumni WHERE id_alumni = $1 LIMIT 1`
-	err := config.DB.QueryRow(query, idAlumni).Scan(
+		FROM perkajaan_alumni WHERE id = $1 LIMIT 1`
+	err := config.DB.QueryRow(query, id).Scan(
 		&perkajaan.ID,
 		&perkajaan.IDAlumni,
 		&perkajaan.StatusKerja,
@@ -62,9 +62,9 @@ func UpdatePerkajaanAlumni(idAlumni string, perkajaan *model.PerkajaanAlumni) er
 	return err
 }
 
-func DeletePerkajaanAlumni(idAlumni string) error {
-	query := `DELETE FROM perkajaan_alumni WHERE id_alumni = $1`
-	_, err := config.DB.Exec(query, idAlumni)
+func DeletePerkajaanAlumni(id string) error {
+	query := `DELETE FROM perkajaan_alumni WHERE id = $1`
+	_, err := config.DB.Exec(query, id)
 	return err
 }
 
