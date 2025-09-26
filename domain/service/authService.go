@@ -5,11 +5,18 @@ import (
 	"time"
 	"tugas/domain/config"
 	"tugas/domain/model"
-	"tugas/domain/repository"
 
-	"golang.org/x/crypto/bcrypt"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
+
+type UserService struct {
+    userRepo model.UserRepository
+}
+
+func NewUserService(userRepo model.UserRepository) *UserService {
+    return &UserService{userRepo: userRepo}
+}
 
 type AuthService interface {
 	Login(email, password string) (string, *model.Users, error)
@@ -17,12 +24,12 @@ type AuthService interface {
 }
 
 type authService struct {
-	userRepo repository.UserRepository
+	userRepo model.UserRepository
 	secret   string
 	expiry   time.Duration
 }
 
-func NewAuthService(userRepo repository.UserRepository) AuthService {
+func NewAuthService(userRepo model.UserRepository) AuthService {
 	return &authService{
 		userRepo: userRepo,
 		secret:   config.GetJWTSecret(),

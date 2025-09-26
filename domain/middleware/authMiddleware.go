@@ -4,13 +4,13 @@ import (
 	"strings"
 
 	"tugas/domain/config"
-	"tugas/domain/repository"
+	"tugas/domain/model"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func JWTAuth(userRepo repository.UserRepository) fiber.Handler {
+func JWTAuth(userRepo *model.UserRepository) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {

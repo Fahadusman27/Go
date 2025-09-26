@@ -1,147 +1,147 @@
-	package service
+package service
 
-	import (
-		"database/sql"
-		"tugas/domain/model"
-		."tugas/domain/repository"
+import (
+	"database/sql"
+	"tugas/domain/model"
+	. "tugas/domain/repository"
 
-		"github.com/gofiber/fiber/v2"
-	)
+	"github.com/gofiber/fiber/v2"
+)
 
-	func CheckPerkajaanAlumniService(c *fiber.Ctx) error {
-		id := c.Params("id")
-		if id == "" {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "ID wajib diisi",
-				"success": false,
-			})
-		}
-
-		perkajaan, err := CheckPerkajaanAlumniByID(id)
-		if err != nil {
-			if err == sql.ErrNoRows {
-				return c.Status(fiber.StatusOK).JSON(fiber.Map{
-					"message":  "Data perkajaan alumni tidak ditemukan",
-					"success":  true,
-					"exists":   false,
-				})
-			}
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"message": "Gagal cek perkajaan alumni karena " + err.Error(),
-				"success": false,
-			})
-		}
-
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
-			"message":    "Berhasil mendapatkan data perkajaan alumni",
-			"success":    true,
-			"exists":     true,
-			"perkajaan":  perkajaan,
+func CheckpekerjaanAlumniService(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "ID tidak ditemukan",
+			"success": false,
 		})
 	}
 
-	func CreatePerkajaanAlumniService(c *fiber.Ctx) error {
-		var perkajaan model.PerkajaanAlumni
-		if err := c.BodyParser(&perkajaan); err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "Invalid request body",
-				"success": false,
+	pekerjaan, err := CheckpekerjaanAlumniByID(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return c.Status(fiber.StatusOK).JSON(fiber.Map{
+				"message": "Data pekerjaan alumni tidak ditemukan",
+				"success": true,
+				"exists":  false,
 			})
 		}
-
-		if perkajaan.IDAlumni == "" || perkajaan.StatusKerja == "" {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "IDAlumni dan StatusKerja wajib diisi",
-				"success": false,
-			})
-		}
-
-		if err := CreatePerkajaanAlumni(&perkajaan); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"message": "Gagal membuat perkajaan alumni karena " + err.Error(),
-				"success": false,
-			})
-		}
-
-		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-			"message":   "Berhasil membuat data perkajaan alumni",
-			"success":   true,
-			"perkajaan": perkajaan,
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal cek pekerjaan alumni karena " + err.Error(),
+			"success": false,
 		})
 	}
 
-	func UpdatePerkajaanAlumniService(c *fiber.Ctx) error {
-		id := c.Params("id")
-		if id == "" {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "ID wajib diisi",
-				"success": false,
-			})
-		}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":   "Berhasil mendapatkan data pekerjaan alumni",
+		"success":   true,
+		"exists":    true,
+		"pekerjaan": pekerjaan,
+	})
+}
 
-		var perkajaan model.PerkajaanAlumni
-		if err := c.BodyParser(&perkajaan); err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "Invalid request body",
-				"success": false,
-			})
-		}
-
-		if perkajaan.ID == 10 || perkajaan.StatusKerja == "" {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "ID dan StatusKerja wajib diisi",
-				"success": false,
-			})
-		}
-
-		if err := UpdatePerkajaanAlumni(id, &perkajaan); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"message": "Gagal update perkajaan alumni karena " + err.Error(),
-				"success": false,
-			})
-		}
-
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
-			"message":   "Berhasil update data perkajaan alumni",
-			"success":   true,
-			"perkajaan": perkajaan,
+func CreatepekerjaanAlumniService(c *fiber.Ctx) error {
+	var pekerjaan model.PekerjaanAlumni
+	if err := c.BodyParser(&pekerjaan); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid request body",
+			"success": false,
 		})
 	}
 
-	func DeletePerkajaanAlumniService(c *fiber.Ctx) error {
-		idAlumni := c.Params("id_alumni")
-		if idAlumni == "" {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "IDAlumni wajib diisi",
-				"success": false,
-			})
-		}
-
-		if err := DeletePerkajaanAlumni(idAlumni); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"message": "Gagal menghapus perkajaan alumni karena " + err.Error(),
-				"success": false,
-			})
-		}
-
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
-			"message": "Berhasil menghapus data perkajaan alumni",
-			"success": true,
+	if pekerjaan.NimAlumni == "" || pekerjaan.StatusKerja == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "IDAlumni dan StatusKerja wajib diisi",
+			"success": false,
 		})
 	}
 
-	func GetAllPerkajaanAlumniService(c *fiber.Ctx) error {
-		perkajaanList, err := GetAllPerkajaanAlumni()
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"message": "Gagal mendapatkan daftar perkajaan alumni karena " + err.Error(),
-				"success": false,
-			})
-		}
-
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
-			"message":   "Berhasil mendapatkan daftar perkajaan alumni",
-			"success":   true,
-			"perkajaan": perkajaanList,
+	if err := CreatepekerjaanAlumni(&pekerjaan); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal membuat pekerjaan alumni karena " + err.Error(),
+			"success": false,
 		})
 	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message":   "Berhasil membuat data pekerjaan alumni",
+		"success":   true,
+		"pekerjaan": pekerjaan,
+	})
+}
+
+func UpdatepekerjaanAlumniService(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "ID wajib diisi",
+			"success": false,
+		})
+	}
+
+	var pekerjaan model.PekerjaanAlumni
+	if err := c.BodyParser(&pekerjaan); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid request body",
+			"success": false,
+		})
+	}
+
+	if pekerjaan.ID == 10 || pekerjaan.StatusKerja == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "ID dan StatusKerja wajib diisi",
+			"success": false,
+		})
+	}
+
+	if err := UpdatepekerjaanAlumni(id, &pekerjaan); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal update pekerjaan alumni karena " + err.Error(),
+			"success": false,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":   "Berhasil update data pekerjaan alumni",
+		"success":   true,
+		"pekerjaan": pekerjaan,
+	})
+}
+
+func DeletepekerjaanAlumniService(c *fiber.Ctx) error {
+	idAlumni := c.Params("nim_alumni")
+	if idAlumni == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "IDAlumni wajib diisi",
+			"success": false,
+		})
+	}
+
+	if err := DeletepekerjaanAlumni(idAlumni); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal menghapus pekerjaan alumni karena " + err.Error(),
+			"success": false,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Berhasil menghapus data pekerjaan alumni",
+		"success": true,
+	})
+}
+
+func GetAllpekerjaanAlumniService(c *fiber.Ctx) error {
+	pekerjaanList, err := GetAllpekerjaanAlumni()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal mendapatkan daftar pekerjaan alumni karena " + err.Error(),
+			"success": false,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":   "Berhasil mendapatkan daftar pekerjaan alumni",
+		"success":   true,
+		"pekerjaan": pekerjaanList,
+	})
+}

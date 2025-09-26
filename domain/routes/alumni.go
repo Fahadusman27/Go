@@ -1,13 +1,14 @@
 package routes
 
 import (
+	. "tugas/domain/middleware"
+	"tugas/domain/model"
 	"tugas/domain/service"
+
 	"github.com/gofiber/fiber/v2"
-	"tugas/domain/repository"
-	."tugas/domain/middleware"
 )
 
-func Alumni(app *fiber.App, userRepo repository.UserRepository) {
+func Alumni(app *fiber.App, userRepo *model.UserRepository) {
     app.Get("/alumni", JWTAuth(userRepo), RequireRole("admin", "user"), service.GetAllAlumniService)
     app.Get("/alumni/:nim", JWTAuth(userRepo), RequireRole("admin", "user"), service.CheckAlumniService)
     app.Post("/alumni", JWTAuth(userRepo), RequireRole("admin"), service.CreateAlumniService)

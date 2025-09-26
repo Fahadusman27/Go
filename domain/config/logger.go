@@ -5,6 +5,10 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
+
+    "fmt"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func InitDB() *sql.DB {
@@ -21,4 +25,9 @@ func InitDB() *sql.DB {
     }
 
     return db
+}
+
+func LoggerMiddleware(c *fiber.Ctx) error {
+	fmt.Println("Request:", c.Method(), c.Path())
+	return c.Next()
 }

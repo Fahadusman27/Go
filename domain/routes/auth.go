@@ -2,14 +2,13 @@ package routes
 
 import (
 	"tugas/domain/model"
-	"tugas/domain/repository"
 	"tugas/domain/service"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func AuthRoutes(app *fiber.App, userRepo repository.UserRepository) {
+func AuthRoutes(app *fiber.App, userRepo model.UserRepository) {
 	authService := service.NewAuthService(userRepo)
 
 	app.Post("/register", func(c *fiber.Ctx) error {
@@ -68,4 +67,8 @@ func AuthRoutes(app *fiber.App, userRepo repository.UserRepository) {
 		role := c.Locals("role")
 		return c.JSON(fiber.Map{"user_id": uid, "role": role})
 	})
+}
+
+func UserRoutes(app *fiber.App) {
+	app.Get("/users", service.GetUsersService)
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"database/sql"
-	"strconv"
 	"tugas/domain/model"
 	"tugas/domain/repository"
 
@@ -13,7 +12,7 @@ func CheckAlumniService(c *fiber.Ctx) error {
     nim := c.Params("nim")
     if nim == "" {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "message": "NIM wajib diisi",
+            "message": "Gagal    di ambil",
             "success": false,
         })
     }
@@ -36,46 +35,6 @@ func CheckAlumniService(c *fiber.Ctx) error {
         "success":  true,
         "isAlumni": true,
         "alumni":   alumni,
-    })
-}
-
-func GetJumlahAlumniService(c *fiber.Ctx) error {
-    jumlahAngkatanStr := c.Query("angkatan")
-    if jumlahAngkatanStr == "" {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "message": "angkatan wajib diisi",
-            "success": false,
-        })
-    }
-
-    jumlahAngkatan, err := strconv.Atoi(jumlahAngkatanStr)
-    if err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "message": "angkatan harus berupa angka",
-            "success": false,
-        })
-    }
-
-    alumni, err := repository.GetJumlahAlumni(jumlahAngkatan)
-    if err != nil {
-        if err == sql.ErrNoRows {
-            return c.Status(fiber.StatusOK).JSON(fiber.Map{
-                "message": "Data alumni tidak ditemukan",
-                "success": true,
-                "exists":  false,
-            })
-        }
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "message": "Gagal cek alumni karena " + err.Error(),
-            "success": false,
-        })
-    }
-
-    return c.Status(fiber.StatusOK).JSON(fiber.Map{
-        "message": "Berhasil mendapatkan data alumni",
-        "success": true,
-        "exists":  true,
-        "alumni":  alumni,
     })
 }
 

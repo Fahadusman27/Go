@@ -5,95 +5,98 @@ import (
 	"tugas/domain/model"
 )
 
-// CheckPerkajaanAlumniByIDAlumni checks if a PerkajaanAlumni exists by IDAlumni
-func CheckPerkajaanAlumniByID(id string) (*model.PerkajaanAlumni, error) {
-	perkajaan := new(model.PerkajaanAlumni)
+func CheckpekerjaanAlumniByID(id string) (*model.PekerjaanAlumni, error) {
+	pekerjaan := new(model.PekerjaanAlumni)
 	query := `
-		SELECT id, id_alumni, status_kerja, jenis_industri,
+		SELECT id, nim_alumni, status_kerja, jenis_industri, pekerjaan,
 		    jabatan, gaji, lama_bekerja
-		FROM perkajaan_alumni WHERE id = $1 LIMIT 1`
+		FROM pekerjaan_alumni WHERE id = $1 LIMIT 1`
 	err := config.DB.QueryRow(query, id).Scan(
-		&perkajaan.ID,
-		&perkajaan.IDAlumni,
-		&perkajaan.StatusKerja,
-		&perkajaan.JenisIndustri,
-		&perkajaan.Jabatan,
-		&perkajaan.Gaji,
-		&perkajaan.LamaBekerja,
+		&pekerjaan.ID,
+		&pekerjaan.NimAlumni,
+		&pekerjaan.StatusKerja,
+		&pekerjaan.JenisIndustri,
+		&pekerjaan.Pekerjaan,
+		&pekerjaan.Jabatan,
+		&pekerjaan.Gaji,
+		&pekerjaan.LamaBekerja,
 	)
 	if err != nil {
 		return nil, err
 	}
-	return perkajaan, nil
+	return pekerjaan, nil
 }
 
-func CreatePerkajaanAlumni(perkajaan *model.PerkajaanAlumni) error {
+func CreatepekerjaanAlumni(pekerjaan *model.PekerjaanAlumni) error {
 	query := `
-		INSERT INTO perkajaan_alumni (
-			id_alumni, status_kerja, jenis_industri,
+		INSERT INTO pekerjaan_alumni (
+			nim_alumni, status_kerja, jenis_industri, pekerjaan,
 			jabatan, gaji, lama_bekerja
-		) VALUES ($1, $2, $3, $4, $5, $6)
+		) VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING id`
 	err := config.DB.QueryRow(query,
-		perkajaan.IDAlumni,
-		perkajaan.StatusKerja,
-		perkajaan.JenisIndustri,
-		perkajaan.Jabatan,
-		perkajaan.Gaji,
-		perkajaan.LamaBekerja,
-	).Scan(&perkajaan.ID)
+		pekerjaan.NimAlumni,
+		pekerjaan.StatusKerja,
+		pekerjaan.JenisIndustri,
+		pekerjaan.Pekerjaan,
+		pekerjaan.Jabatan,
+		pekerjaan.Gaji,
+		pekerjaan.LamaBekerja,
+	).Scan(&pekerjaan.ID)
 	return err
 }
 
-func UpdatePerkajaanAlumni(idAlumni string, perkajaan *model.PerkajaanAlumni) error {
+func UpdatepekerjaanAlumni(idAlumni string, pekerjaan *model.PekerjaanAlumni) error {
 	query := `
-		UPDATE perkajaan_alumni
-		SET status_kerja = $1, jenis_industri = $2, jabatan = $3,
-		    gaji = $4, lama_bekerja = $5
-		WHERE id_alumni = $6`
+		UPDATE pekerjaan_alumni
+		SET status_kerja = $1, jenis_industri = $2, pekerjaan=$3, jabatan = $4,
+		    gaji = $5, lama_bekerja = $6, pekerjaan = $7
+		WHERE nim_alumni = $8`
 	_, err := config.DB.Exec(query,
-		perkajaan.StatusKerja,
-		perkajaan.JenisIndustri,
-		perkajaan.Jabatan,
-		perkajaan.Gaji,
-		perkajaan.LamaBekerja,
+		pekerjaan.StatusKerja,
+		pekerjaan.JenisIndustri,
+		pekerjaan.Pekerjaan,
+		pekerjaan.Jabatan,
+		pekerjaan.Gaji,
+		pekerjaan.LamaBekerja,
+		pekerjaan.Pekerjaan,
 		idAlumni,
 	)
 	return err
 }
 
-func DeletePerkajaanAlumni(id string) error {
-	query := `DELETE FROM perkajaan_alumni WHERE id = $1`
+func DeletepekerjaanAlumni(id string) error {
+	query := `DELETE FROM pekerjaan_alumni WHERE id = $1`
 	_, err := config.DB.Exec(query, id)
 	return err
 }
 
-func GetAllPerkajaanAlumni() ([]model.PerkajaanAlumni, error) {
-	query := `t
-		SELECT id, id_alumni, status_kerja, jenis_industri, jabatan, gaji, lama_bekerja
-		FROM perkajaan_alumni`
+func GetAllpekerjaanAlumni() ([]model.PekerjaanAlumni, error) {
+	query := `SELECT id, nim_alumni, status_kerja, jenis_industri, pekerjaan, jabatan, gaji, lama_bekerja
+		FROM pekerjaan_alumni`
 	rows, err := config.DB.Query(query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var perkajaanList []model.PerkajaanAlumni
+	var pekerjaanList []model.PekerjaanAlumni
 	for rows.Next() {
-		var perkajaan model.PerkajaanAlumni
+		var pekerjaan model.PekerjaanAlumni
 		err := rows.Scan(
-			&perkajaan.ID,
-			&perkajaan.IDAlumni,
-			&perkajaan.StatusKerja,
-			&perkajaan.JenisIndustri,
-			&perkajaan.Jabatan,
-			&perkajaan.Gaji,
-			&perkajaan.LamaBekerja,
+			&pekerjaan.ID,
+			&pekerjaan.NimAlumni,
+			&pekerjaan.StatusKerja,
+			&pekerjaan.JenisIndustri,
+			&pekerjaan.Pekerjaan,
+			&pekerjaan.Jabatan,
+			&pekerjaan.Gaji,
+			&pekerjaan.LamaBekerja,
 		)
 		if err != nil {
 			return nil, err
 		}
-		perkajaanList = append(perkajaanList, perkajaan)
+		pekerjaanList = append(pekerjaanList, pekerjaan)
 	}
-	return perkajaanList, nil
+	return pekerjaanList, nil
 }
